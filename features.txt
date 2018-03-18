@@ -1,0 +1,17 @@
+- added username linked to Giphy page if it exists otherwise print unknown
+- added twitter if it exists - colored and linked font awesome to twitter page
+	- had to handle case where twitter field did not have the @ - ex. mlb
+
+- auto centers image within bootstrap div
+- trimmed off the time of the date/time for display purposes
+
+- clear input box after submit it clicked
+
+- boxes on top are colorcoded for the DB that they were queried from originally
+
+- TODO
+	- cookies
+	- favorites
+	- add Library of Congress API
+	- hover over the image for alt data
+	- 1 click download

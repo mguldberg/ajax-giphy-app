@@ -1,0 +1,36 @@
+
+
+body{
+font-size: 15px;
+
+}
+button,
+    div,
+    form,
+    input {
+      margin: 5px;
+      
+    }
+
+
+    button{
+        text-align: center;
+    }
+
+    p{
+        /* width: 80%; */
+        font-size: 12px;
+    }
+   
+
+
+     img {
+         margin: 0 auto;
+
+
+     }
+     img.movie-poster{
+        height: 250px;
+
+
+    }
