@@ -1,60 +1,60 @@
 
-// |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
-// |*|  * docCookies.getItem(name)
-// |*|  * docCookies.removeItem(name[, path[, domain]])
-// |*|  * docCookies.hasItem(name)
-// |*|  * docCookies.keys()
-// |*|
-// \*/
+// // |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+// // |*|  * docCookies.getItem(name)
+// // |*|  * docCookies.removeItem(name[, path[, domain]])
+// // |*|  * docCookies.hasItem(name)
+// // |*|  * docCookies.keys()
+// // |*|
+// // \*/
 
-var docCookies = {
-    getItem: function (sKey) {
-        if (!sKey) { return null; }
-        return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
-    },
-    setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-        if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-        var sExpires = "";
-        if (vEnd) {
-            switch (vEnd.constructor) {
-                case Number:
-                    sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
-                    /*
-                    Note: Despite officially defined in RFC 6265, the use of `max-age` is not compatible with any
-                    version of Internet Explorer, Edge and some mobile browsers. Therefore passing a number to
-                    the end parameter might not work as expected. A possible solution might be to convert the the
-                    relative time to an absolute time. For instance, replacing the previous line with:
-                    */
-                    /*
-                    sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; expires=" + (new Date(vEnd * 1e3 + Date.now())).toUTCString();
-                    */
-                    break;
-                case String:
-                    sExpires = "; expires=" + vEnd;
-                    break;
-                case Date:
-                    sExpires = "; expires=" + vEnd.toUTCString();
-                    break;
-            }
-        }
-        document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
-        return true;
-    },
-    removeItem: function (sKey, sPath, sDomain) {
-        if (!this.hasItem(sKey)) { return false; }
-        document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
-        return true;
-    },
-    hasItem: function (sKey) {
-        if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-        return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
-    },
-    keys: function () {
-        var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
-        for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
-        return aKeys;
-    }
-};
+// var docCookies = {
+//     getItem: function (sKey) {
+//         if (!sKey) { return null; }
+//         return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+//     },
+//     setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+//         if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+//         var sExpires = "";
+//         if (vEnd) {
+//             switch (vEnd.constructor) {
+//                 case Number:
+//                     sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+//                     /*
+//                     Note: Despite officially defined in RFC 6265, the use of `max-age` is not compatible with any
+//                     version of Internet Explorer, Edge and some mobile browsers. Therefore passing a number to
+//                     the end parameter might not work as expected. A possible solution might be to convert the the
+//                     relative time to an absolute time. For instance, replacing the previous line with:
+//                     */
+//                     /*
+//                     sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; expires=" + (new Date(vEnd * 1e3 + Date.now())).toUTCString();
+//                     */
+//                     break;
+//                 case String:
+//                     sExpires = "; expires=" + vEnd;
+//                     break;
+//                 case Date:
+//                     sExpires = "; expires=" + vEnd.toUTCString();
+//                     break;
+//             }
+//         }
+//         document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+//         return true;
+//     },
+//     removeItem: function (sKey, sPath, sDomain) {
+//         if (!this.hasItem(sKey)) { return false; }
+//         document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+//         return true;
+//     },
+//     hasItem: function (sKey) {
+//         if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+//         return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+//     },
+//     keys: function () {
+//         var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+//         for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+//         return aKeys;
+//     }
+// };
 
 
 
@@ -67,9 +67,23 @@ var arrayOfTopicButtons = [
     { topic: "star wars", searchOption: "omdb" },
     { topic: "lawnmowers", searchOption: "us-loc" }
 ];
+// var arrayOfTopicButtons;
 
 $(document).ready(function () {
 
+    Cookies.get();
+    var tempArray = Cookies.get("topicArrayButtons");
+
+    console.log("arrayDump-top");
+    console.log(arrayOfTopicButtons);
+    console.log(tempArray);
+
+    var arrayLocal = Cookies.getJSON('topicArrayButtons');
+    console.log("arrayDump");
+    console.log(arrayLocal);
+
+    if (arrayLocal != undefined)
+        arrayOfTopicButtons = arrayLocal;
     //pre-populate the button row at the top of the screen
     populateButtons(arrayOfTopicButtons);
 
@@ -85,14 +99,16 @@ $(document).ready(function () {
         console.log($("#topic-input").val());
 
         console.log($(".custom-select").val());
+        console.log("ARRAY before: ");
+        console.log(arrayOfTopicButtons);
 
         switch ($(".custom-select").val()) {
             case "giphy":
                 //add giphy button at the top
-                var newButton = $("<button class='topic-btn bg-success' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
+                var newButton = $("<button class='topic-btn bg-success text-white' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
-                arrayOfTopicButtons.push(topic);
-
+                var tempObj = { topic: topic, searchOption: "giphy" };
+                arrayOfTopicButtons.push(tempObj);
                 queryGiphyApi(topic);
                 break;
 
@@ -100,16 +116,17 @@ $(document).ready(function () {
                 //add OMDb button at the top
                 var newButton = $("<button class='topic-btn bg-warning' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
-                arrayOfTopicButtons.push(topic);
-
+                var tempObj = { topic: topic, searchOption: "omdb" };
+                arrayOfTopicButtons.push(tempObj);
                 queryOMDbApi(topic);
                 break;
 
             case "us-loc":
                 //add LOC button at the top
-                var newButton = $("<button class='topic-btn bg-danger' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
+                var newButton = $("<button class='topic-btn bg-primary text-white' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
-                arrayOfTopicButtons.push(topic);
+                var tempObj = { topic: topic, searchOption: "us-loc" };
+                arrayOfTopicButtons.push(tempObj);
 
                 queryLibraryOfCongressApi(topic);
                 break;
@@ -118,6 +135,20 @@ $(document).ready(function () {
 
         //clear the text box    
         $("#search-button-form").trigger("reset");
+
+        console.log("ARRAY after: ");
+        console.log(arrayOfTopicButtons);
+
+        //add to the cookie
+        var status = Cookies.set("topicArrayButtons", arrayOfTopicButtons);
+
+        var cookiesAvail = Cookies.get();
+        console.log(status);
+        console.log(cookiesAvail);
+
+        console.log(Cookies.getJSON("topicArrayButtons"));
+
+        console.log(JSON.stringify(cookiesAvail));
 
     });
 
@@ -169,7 +200,105 @@ $(document).ready(function () {
 
 });
 
-//query the API - TODO add in drop down box to search other apis
+// Search
+// http://loc.gov/pictures/search/?q=<query>&fo=json
+
+// Searches descriptive information for the search terms specified by <query>.
+// Options
+// Search Options
+// q - query, search terms (None)
+// fa - facets, format = <field>|<facet value> (None)
+// co - collection (None)
+// co! - _not_ collection (None)
+// op - operator (AND)
+// va - variants, (True)
+// fi - fields (None/"text")
+
+// Results Options
+// c - count (20)
+// st - style, (list)
+// sp - start page, (1)
+// si - start index (1)
+// fo - format
+// sb - sort by (relevance)
+
+// Response
+// "search"
+// {
+// "type": "search", 
+// "query": "sioux indians",
+// "field": null,
+// "sort_by": null,  
+// "hits": "9"
+// }
+// "links"
+// {
+//     "json": "//loc.gov/pictures/search?q=sioux%20indians&fo=json",
+
+
+// {
+//     "source_created": "2016-12-07 00:00:00",
+//         "index": 2,
+//             "medium": "1 negative : glass ; 5 x 7 in.",
+//                 "reproduction_number": "LC-DIG-anrc-12092 (digital file from original)",
+//                     "links": {
+//         "item": "//www.loc.gov/pictures/item/2017677704/",
+//             "resource": "//www.loc.gov/pictures/item/2017677704/resource/"
+//     },
+//     "title": "Playing basketball. Greek, Armenian and Turkish girls, students at American Girl's College, Constantinople. Basketball is the favorite sport in the Turkish capital. Here is a group of Greek and Armenian girl students at play in the grounds of the American Girl's College. They get their basketballs from the United States",
+//         "image": {
+//         "alt": "digitized item thumbnail",
+//             "full": "//www.loc.gov/pictures/cdn/service/pnp/anrc/12000/12092r.jpg",
+
+
+function queryLibraryOfCongressApi(searchString) {
+
+
+    // "http://www.loc.gov/pictures/search/?q=basketball&fa=displayed%3Aanywhere&c=30&sp=1&st=gallery&fo=json"
+    http://www.loc.gov/pictures/search/?q=basketball&c=10&sp=1&st=gallery&fo=json&fa=displayed%3Aanywhere
+    // Built by LucyBot. www.lucybot.com at the NYT api help website
+    var queryURL = "http://www.loc.gov/pictures/search/";
+    queryURL += '?' + $.param({
+        'q': searchString,
+        'c': "10",
+        'sp': "1",
+        'st': "gallery",
+        'fo': "json",
+        'fa': ""
+
+    });
+
+    queryURL += "displayed%3Aanywhere";
+    // queryURL =  "https://loc.gov/pictures/item/89709841/?fo=json";
+
+    console.log(queryURL);
+
+
+    $.ajax({
+        type: "GET",
+        url: queryURL,
+        dataType: 'jsonp',
+        data: {
+            fo: 'jsonp',
+            at: 'featured'
+        }
+    }).done(function (getImages) {
+        console.log(getImages);
+        console.log(getImages.reseults.length);
+
+    });
+
+    $.ajax({
+        METHOD: "GET",
+        url: queryURL,
+    }).done(function (getImages) {
+        console.log(getImages);
+        console.log(getImages.reseults.length);
+
+    });
+}
+
+//query the Giphy API
 function queryGiphyApi(searchString) {
 
     // proper form from the giphy api generator page - https://developers.giphy.com/explorer
@@ -193,26 +322,23 @@ function queryGiphyApi(searchString) {
     }).then(function (getGif) {
         console.log(getGif)
 
-
-
         console.log(getGif.data.length);
         for (var i = 0; i < getGif.data.length; i++) {
             console.log(i);
             var getGifDiv = $("<div class='card border bg-light' >");
             // Div layout
-            //  
-            // Giphy User:  123abc
-            // Rating: G, PG, etc returned in query (CAPS letter), Twitter logo - linked to twitter page
-            // Import date/time
             // 
             //  ^ 
             //  |
             // IMG
             //  |
             //  v
+            //  
+            // Giphy User:  123abc
+            // Rating: G, PG, etc returned in query (CAPS letter), Twitter logo - linked to twitter page
+            // Import date/time
+
             //
-
-
             //right after the opening text...get the username if available
             //check to see if there is a valid username of the GIF contributor
             // if true
@@ -269,9 +395,16 @@ function queryGiphyApi(searchString) {
                 //prepend text so it isn't part of the <a href> link prepending the 'a' just before this
                 getGifDiv.prepend("Source: ");
 
+                console.log(getGif.data[i].source_tld);
                 //populate the top with the source tld
-                a.attr("href", "https://" + getGif.data[i].source_tld);
-                a.text(getGif.data[i].source_tld);
+                if (getGif.data[i].source_tld != "") {
+                    a.attr("href", "https://" + getGif.data[i].source_tld);
+                    a.text(getGif.data[i].source_tld);
+                }
+                else {
+                    a.attr("href", "https://www.youtube.com/watch?v=UmzsWxPLIOo");
+                    a.text("I see nothing!");
+                }
                 //put the username/link before the rating but after the opening text
                 getGifDiv.append(a);
                 console.log(a);
@@ -284,9 +417,6 @@ function queryGiphyApi(searchString) {
             //add rating to the topic GIF div
             console.log(getGif.data[i].rating);
             var secondRowDiv = $('<div class="container-fluid row justify-content-between">');
-            // var secondRowCol = $('<div class="container col-md-12">');
-            // secondRowDiv.append(secondRowCol);
-
             var p = $('<p class="float-left">').prepend("Rating: " + getGif.data[i].rating.toUpperCase());
 
             //add information for rating before the possible twitter link
@@ -299,7 +429,8 @@ function queryGiphyApi(searchString) {
             var p2 = $("<p>").prepend("Uploaded: " + getGif.data[i].import_datetime.split(" ").shift());
             getGifDiv.append(p2);
 
-
+            // wrap img in a div so I can put on a download icon
+            var imgDiv = $('<div id="imgDiv">');
             //create image element with all attr to support start/stop of the animated GIF
             //also included alt element
             var topicImage = $("<img>");
@@ -309,11 +440,24 @@ function queryGiphyApi(searchString) {
             topicImage.attr("data-still", getGif.data[i].images.fixed_height_small_still.url)
             topicImage.attr("class", "giphy-gif mx-auto d-block")
             topicImage.attr("alt", getGif.data[i].title);
+            topicImage.attr("title", getGif.data[i].title);
 
-            var state = $(this).attr("data-state")
-            var stateAnimate = $(this).attr("data-animate")
-            var stateStill = $(this).attr("data-still")
-            getGifDiv.append(topicImage);
+            //format for the download icon link
+            //<a href="https://media3.giphy.com/media/26hirEPeos6yugLDO/100.gif" download="100.gif" class="top-right">
+            //      <i style="font-size:18px" class="fa">&#xf019</i>
+            //</a>
+            var downloadAnchor = $('<a id="download-link" class="top-right">');
+
+            downloadAnchor.attr("href", getGif.data[i].images.fixed_height_small.url);
+            // put the download font awesome on the row linked to the image URL
+            downloadAnchor.html('<i style="font-size:18px" class="fa">&#xf019</i>');
+
+            //fill up the imgDiv
+            imgDiv.prepend(downloadAnchor);
+            imgDiv.prepend(topicImage);
+
+            //put the imgDiv at the top of the parent GIF Div
+            getGifDiv.prepend(imgDiv);
 
             console.log(getGifDiv);
             $("#gif-content").prepend(getGifDiv);
@@ -344,6 +488,21 @@ function queryOMDbApi(topic) {
     }).done(function (getMovieInfo) {
         console.log(getMovieInfo)
 
+        //populate new div with movie information from OMDb
+        // Div layout
+        // 
+        //  ^ 
+        //  |
+        // IMG
+        //  |
+        //  v
+        //  
+        // Title
+        // Rating 
+        // Release year/date
+        // Runtime
+        //
+
         var moviePoster = getMovieInfo.Poster
         console.log(getMovieInfo.Poster);
         var newDiv = $('<div class="card border bg-light">')
@@ -351,7 +510,27 @@ function queryOMDbApi(topic) {
         newDiv.append("<p>" + getMovieInfo.Rated + "</p>")
         newDiv.append("<p>" + getMovieInfo.Released + "</p>")
         newDiv.append("<p>" + getMovieInfo.Runtime + "</p>")
-        newDiv.append('<img src="' + moviePoster + ' " class="movie-poster">');
+        // wrap img in a div so I can put on a download icon
+        var imgDiv = $('<div id="movieImgDiv">');
+
+        //populate imgDiv with poster returned from OMDb
+        imgDiv.append('<img src="' + moviePoster + ' " class="movie-poster">');
+
+        //format for the download icon link
+        //<a href="https://media3.giphy.com/media/26hirEPeos6yugLDO/100.gif" download="100.gif" class="top-right">
+        //      <i style="font-size:18px" class="fa">&#xf019</i>
+        //</a>
+        var downloadAnchor = $('<a id="download-link" class="top-right">');
+        downloadAnchor.attr("href", moviePoster);
+        // put the download font awesome on the row linked to the image URL
+        downloadAnchor.html('<i style="font-size:18px" class="fa">&#xf019</i>');
+
+        //fill up the imgDiv
+        imgDiv.append(downloadAnchor);
+        
+        //place imgDiv inside of parent movieImgDiv
+        newDiv.prepend(imgDiv);
+        
         $("#gif-content").prepend(newDiv);
         console.log(newDiv);
 
@@ -359,33 +538,36 @@ function queryOMDbApi(topic) {
 }
 
 //pre-populate the button row at the top of the screen
-function populateButtons(arrayOfTopicButtons) {
+function populateButtons(functionArrayOfTopicButtons) {
 
-    for (i = 0; i < arrayOfTopicButtons.length; i++) {
+    console.log("argument passed in");
+    console.log(functionArrayOfTopicButtons);
+
+    for (i = 0; i < functionArrayOfTopicButtons.length; i++) {
 
 
-        console.log("Gen BUttons: " + arrayOfTopicButtons[i].searchOption);
+        console.log("Gen BUttons: " + functionArrayOfTopicButtons[i].searchOption);
 
-        switch (arrayOfTopicButtons[i].searchOption) {
+        switch (functionArrayOfTopicButtons[i].searchOption) {
             case "giphy":
                 //add giphy button at the top
-                var newButton = $("<button class='topic-btn bg-success' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
+                var newButton = $("<button class='topic-btn bg-success text-white' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
                 $('#topic-buttons').append(newButton);
-                
+
                 break;
 
             case "omdb":
                 //add OMDb button at the top
                 var newButton = $("<button class='topic-btn bg-warning' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
                 $('#topic-buttons').append(newButton);
-                
+
                 break;
 
             case "us-loc":
                 //add LOC button at the top
-                var newButton = $("<button class='topic-btn bg-primary' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
+                var newButton = $("<button class='topic-btn bg-primary text-white' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
                 $('#topic-buttons').append(newButton);
-                
+
                 break;
         };
 
@@ -395,8 +577,10 @@ function populateButtons(arrayOfTopicButtons) {
     // Create a cookie, valid across the entire site:
     //  Cookies.set('name', 'value');
 
-    var status = Cookies.set("topicArrayButtons", arrayOfTopicButtons);
-
+    console.log("ARRAY: ");
+    console.log(functionArrayOfTopicButtons);
+    var status = Cookies.set("topicArrayButtons", functionArrayOfTopicButtons);
+    status = JSON.stringify(status);
     var cookiesAvail = Cookies.get();
     console.log(status);
     console.log(cookiesAvail);
@@ -410,20 +594,14 @@ function populateButtons(arrayOfTopicButtons) {
     console.log("arrayDump");
     console.log(arrayLocal);
 
+    console.log(Cookies.get());
+
     // Read all visible cookies:
     //  Cookies.get(); // => { name: 'value' }
 
     // Delete cookie:
     //Cookies.remove('name');
+    console.log(Cookies.remove("topicArrayButtons"));
 
-    document.cookie = "Gophers";
-
-    console.log(document.cookie);
-
-    var docStatus = docCookies.setItem("topicArrayButtons2", arrayOfTopicButtons);
-    console.log(docStatus);
-
-    var localFirst = docCookies.getItem("topicArrayButtons2");
-    console.log(localFirst);
 }
 

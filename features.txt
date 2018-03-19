@@ -1,17 +1,23 @@
-- added username linked to Giphy page if it exists otherwise print unknown
+- if GIphy username exists print and link it
+	else if print and link Source field
+	else if Source field is blank link to YouTube video of Schultz 		from Hogan's heros
+
 - added twitter if it exists - colored and linked font awesome to twitter page
-	- had to handle case where twitter field did not have the @ - ex. mlb
+	- handled case where twitter field did not have the @ symbol on the twitter feed name - ex. mlb
 
 - auto centers image within bootstrap div
+
 - trimmed off the time of the date/time for display purposes
 
-- clear input box after submit it clicked
+- clear input box after submit it is clicked
 
 - boxes on top are colorcoded for the DB that they were queried from originally
+
+- hover over the image for alt data - just added the same data to title=""
+
 
 - TODO
 	- cookies
 	- favorites
-	- add Library of Congress API
-	- hover over the image for alt data
+	- add Library of Congress API	
 	- 1 click download

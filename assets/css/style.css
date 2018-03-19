@@ -4,6 +4,31 @@ body{
 font-size: 15px;
 
 }
+
+#header p {
+    margin: 5px;
+}
+#giphy-key-text{
+    background-color: green;
+    color: white;
+    height: 50px;
+    width: 100px;
+}
+
+#omdb-key-text{
+    background-color: orange;
+    height: 50px;
+    width: 100px;
+}
+
+#us-loc-key-text{
+    background-color: blue;
+    color: white;
+    height: 50px;
+    width: 100px;
+}
+
+
 button,
     div,
     form,
@@ -21,10 +46,9 @@ button,
         /* width: 80%; */
         font-size: 12px;
     }
-   
 
-
-     img {
+    #movieImgDiv,
+    #imgDiv {
          margin: 0 auto;
 
 
@@ -34,3 +58,15 @@ button,
 
 
     }
+     /* Top right download icon */
+    .top-right {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: maroon;
+        background-color:lightgrey;
+        padding-top: 2px;
+        padding-left: 3px;
+        padding-right: 3px;  
+  
+  }
