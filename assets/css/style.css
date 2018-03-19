@@ -8,24 +8,21 @@ font-size: 15px;
 #header p {
     margin: 5px;
 }
+#top-right-key{
+    text-align: right;
+}
 #giphy-key-text{
     background-color: green;
     color: white;
-    height: 50px;
-    width: 100px;
 }
 
 #omdb-key-text{
     background-color: orange;
-    height: 50px;
-    width: 100px;
-}
+ }
 
 #us-loc-key-text{
     background-color: blue;
     color: white;
-    height: 50px;
-    width: 100px;
 }
 
 
@@ -56,6 +53,16 @@ button,
      img.movie-poster{
         height: 250px;
 
+
+    }
+
+    .table{
+        font-size: 12px;
+        margin-bottom: 0px;
+    }
+    .table th,
+    .table td{
+        padding: 1px;
 
     }
      /* Top right download icon */

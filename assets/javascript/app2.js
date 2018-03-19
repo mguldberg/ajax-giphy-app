@@ -1,93 +1,28 @@
 
-// // |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
-// // |*|  * docCookies.getItem(name)
-// // |*|  * docCookies.removeItem(name[, path[, domain]])
-// // |*|  * docCookies.hasItem(name)
-// // |*|  * docCookies.keys()
-// // |*|
-// // \*/
-
-// var docCookies = {
-//     getItem: function (sKey) {
-//         if (!sKey) { return null; }
-//         return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
-//     },
-//     setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-//         if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-//         var sExpires = "";
-//         if (vEnd) {
-//             switch (vEnd.constructor) {
-//                 case Number:
-//                     sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
-//                     /*
-//                     Note: Despite officially defined in RFC 6265, the use of `max-age` is not compatible with any
-//                     version of Internet Explorer, Edge and some mobile browsers. Therefore passing a number to
-//                     the end parameter might not work as expected. A possible solution might be to convert the the
-//                     relative time to an absolute time. For instance, replacing the previous line with:
-//                     */
-//                     /*
-//                     sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; expires=" + (new Date(vEnd * 1e3 + Date.now())).toUTCString();
-//                     */
-//                     break;
-//                 case String:
-//                     sExpires = "; expires=" + vEnd;
-//                     break;
-//                 case Date:
-//                     sExpires = "; expires=" + vEnd.toUTCString();
-//                     break;
-//             }
-//         }
-//         document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
-//         return true;
-//     },
-//     removeItem: function (sKey, sPath, sDomain) {
-//         if (!this.hasItem(sKey)) { return false; }
-//         document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
-//         return true;
-//     },
-//     hasItem: function (sKey) {
-//         if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
-//         return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
-//     },
-//     keys: function () {
-//         var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
-//         for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
-//         return aKeys;
-//     }
-// };
-
 
 
 //constant  - can't use const because const doesn't work prior to IE 11 ; :-(
 var giphyApiKey = "EH8ZXxBQVql80tOi9F65DupbUqoYfjsF";
 
-//array of buttons to pre-load
-var arrayOfTopicButtons = [
+//array of buttons to pre-load if local storage isn't working
+var arrayButtonsToPrePopulate = [
     { topic: "baseball", searchOption: "giphy" },
     { topic: "star wars", searchOption: "omdb" },
     { topic: "lawnmowers", searchOption: "us-loc" }
 ];
-// var to get the title returned from the OMDb response
-var movieTitleReturned = "";
 
+//global var for local storage buttons
+var localStorageArrayOfTopicButtons = [];
+
+// var to get the title returned from the OMDb response - doesn't work yet
+var movieTitleReturned = "";
 
 $(document).ready(function () {
 
-    Cookies.get();
-    var tempArray = Cookies.get("topicArrayButtons");
+    console.log(arrayButtonsToPrePopulate);
 
-    console.log("arrayDump-top");
-    console.log(arrayOfTopicButtons);
-    console.log(tempArray);
-
-    var arrayLocal = Cookies.getJSON('topicArrayButtons');
-    console.log("arrayDump");
-    console.log(arrayLocal);
-
-    if (arrayLocal != undefined)
-        arrayOfTopicButtons = arrayLocal;
     //pre-populate the button row at the top of the screen
-    populateButtons(arrayOfTopicButtons);
+    populateButtons(arrayButtonsToPrePopulate);
 
     // listen for click on the Topic Search button
     $("#add-topic").on("click", function (event) {
@@ -102,15 +37,22 @@ $(document).ready(function () {
 
         console.log($(".custom-select").val());
         console.log("ARRAY before: ");
-        console.log(arrayOfTopicButtons);
+        console.log(localStorageArrayOfTopicButtons);
 
         switch ($(".custom-select").val()) {
             case "giphy":
                 //add giphy button at the top
-                var newButton = $("<button class='topic-btn bg-success text-white' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
+                var newButton = $("<button class='btn topic-btn bg-success text-white' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
                 var tempObj = { topic: topic, searchOption: "giphy" };
-                arrayOfTopicButtons.push(tempObj);
+
+                //store button to localStorage
+                localStorageArrayOfTopicButtons.push(tempObj);
+                var varToStore = JSON.stringify(localStorageArrayOfTopicButtons);
+                console.log("varToStore");
+                console.log(varToStore);
+                localStorage.setItem("localStorageArrayOfTopicButtons", varToStore);
+
                 queryGiphyApi(topic);
                 break;
 
@@ -119,44 +61,41 @@ $(document).ready(function () {
                 // var to hold the name returned from the DB for the button
                 queryOMDbApi(topic);
 
-                console.log("inside Case:" +movieTitleReturned);
+                console.log("inside Case:" + movieTitleReturned);
 
                 //add OMDb button at the top
                 //set button name to match the one returned from the OMDb query
-                var newButton = $("<button class='topic-btn bg-warning' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
+                var newButton = $("<button class='btn topic-btn bg-warning' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
                 var tempObj = { topic: topic, searchOption: "omdb" };
-                arrayOfTopicButtons.push(tempObj);
+
+                //store button to localStorage
+                localStorageArrayOfTopicButtons.push(tempObj);
+                var varToStore = JSON.stringify(localStorageArrayOfTopicButtons);
+                console.log("varToStore");
+                console.log(varToStore);
+                localStorage.setItem("localStorageArrayOfTopicButtons", varToStore);
                 break;
 
             case "us-loc":
                 //add LOC button at the top
-                var newButton = $("<button class='topic-btn bg-primary text-white' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
+                var newButton = $("<button class='btn topic-btn bg-primary text-white' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
                 var tempObj = { topic: topic, searchOption: "us-loc" };
-                arrayOfTopicButtons.push(tempObj);
+
+                //store button to localStorage
+                localStorageArrayOfTopicButtons.push(tempObj);
+                var varToStore = JSON.stringify(localStorageArrayOfTopicButtons);
+                console.log("varToStore");
+                console.log(varToStore);
+                localStorage.setItem("localStorageArrayOfTopicButtons", varToStore);
 
                 queryLibraryOfCongressApi(topic);
                 break;
         };
-        //call function to handle the query to Giphy
 
         //clear the text box    
         $("#search-button-form").trigger("reset");
-
-        console.log("ARRAY after: ");
-        console.log(arrayOfTopicButtons);
-
-        //add to the cookie
-        var status = Cookies.set("topicArrayButtons", arrayOfTopicButtons);
-
-        var cookiesAvail = Cookies.get();
-        console.log(status);
-        console.log(cookiesAvail);
-
-        console.log(Cookies.getJSON("topicArrayButtons"));
-
-        console.log(JSON.stringify(cookiesAvail));
 
     });
 
@@ -166,6 +105,8 @@ $(document).ready(function () {
         var state = $(this).attr("data-state")
         var stateAnimate = $(this).attr("data-animate")
         var stateStill = $(this).attr("data-still")
+
+        //check current state of the gif  - swap the src of the image to the opposite and change the state variable
         if (state == "still") {
             $(this).attr("src", stateAnimate)
             $(this).attr("data-state", "animated")
@@ -517,10 +458,30 @@ function queryOMDbApi(topic) {
         console.log(getMovieInfo.Title);
         console.log(getMovieInfo.Poster);
         var newDiv = $('<div class="card border bg-light">')
-        newDiv.append("<p>" + getMovieInfo.Title + "</p>")
-        newDiv.append("<p>" + getMovieInfo.Rated + "</p>")
-        newDiv.append("<p>" + getMovieInfo.Released + "</p>")
-        newDiv.append("<p>" + getMovieInfo.Runtime + "</p>")
+
+        //create table for OMDb information
+        //---------------------------
+        // Title     /  Runtime      |
+        // Rated     /  Release Date |
+        //----------------------------
+        //
+        var tableVar = $('<table class="container table table-bordered">');
+
+        var tableRow = $("<tr>");
+        tableRow.append("<th>Title</th>");
+        tableRow.append('<td>' + getMovieInfo.Title + '</td>')
+        tableRow.append("<th>Runtime</th>");
+        tableRow.append("<td>" + getMovieInfo.Runtime + "</td>")
+        tableVar.append(tableRow);
+
+        var tableRow = $("<tr>");
+        tableRow.append("<th>Rated</th>");
+        tableRow.append("<td>" + getMovieInfo.Rated + "</td>")
+        tableRow.append("<th>Released</th>");
+        tableRow.append("<td>" + getMovieInfo.Released + "</td>")
+        tableVar.append(tableRow);
+        newDiv.append(tableVar);
+
         // wrap img in a div so I can put on a download icon
         var imgDiv = $('<div id="movieImgDiv">');
 
@@ -550,34 +511,33 @@ function queryOMDbApi(topic) {
 }
 
 //pre-populate the button row at the top of the screen
-function populateButtons(functionArrayOfTopicButtons) {
+function populateButtons(arrayOfButtons) {
 
     console.log("argument passed in");
-    console.log(functionArrayOfTopicButtons);
+    console.log(arrayOfButtons);
 
-    for (i = 0; i < functionArrayOfTopicButtons.length; i++) {
+    for (i = 0; i < arrayOfButtons.length; i++) {
 
+        console.log("Gen BUttons: " + arrayOfButtons[i].searchOption);
 
-        console.log("Gen BUttons: " + functionArrayOfTopicButtons[i].searchOption);
-
-        switch (functionArrayOfTopicButtons[i].searchOption) {
+        switch (arrayOfButtons[i].searchOption) {
             case "giphy":
                 //add giphy button at the top
-                var newButton = $("<button class='topic-btn bg-success text-white' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
+                var newButton = $("<button class='btn topic-btn bg-success text-white' search-option=" + arrayOfButtons[i].searchOption + " value='" + arrayOfButtons[i].topic + "'>" + arrayOfButtons[i].topic + "</button>");
                 $('#topic-buttons').append(newButton);
 
                 break;
 
             case "omdb":
                 //add OMDb button at the top
-                var newButton = $("<button class='topic-btn bg-warning' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
+                var newButton = $("<button class='btn topic-btn bg-warning' search-option=" + arrayOfButtons[i].searchOption + " value='" + arrayOfButtons[i].topic + "'>" + arrayOfButtons[i].topic + "</button>");
                 $('#topic-buttons').append(newButton);
 
                 break;
 
             case "us-loc":
                 //add LOC button at the top
-                var newButton = $("<button class='topic-btn bg-primary text-white' search-option=" + arrayOfTopicButtons[i].searchOption + " value='" + arrayOfTopicButtons[i].topic + "'>" + arrayOfTopicButtons[i].topic + "</button>");
+                var newButton = $("<button class='btn topic-btn bg-primary text-white' search-option=" + arrayOfButtons[i].searchOption + " value='" + arrayOfButtons[i].topic + "'>" + arrayOfButtons[i].topic + "</button>");
                 $('#topic-buttons').append(newButton);
 
                 break;
@@ -585,35 +545,43 @@ function populateButtons(functionArrayOfTopicButtons) {
 
     };
 
-    // var stringArray = JSON.stringify(arrayOfTopicButtons);
-    // Create a cookie, valid across the entire site:
-    //  Cookies.set('name', 'value');
+    //handle stored buttons
+    var localArrayStored = localStorage.getItem("localStorageArrayOfTopicButtons");
+    var arrayOfButtonsStored = JSON.parse(localArrayStored);
+    console.log("get local storage retunred");
+    console.log(arrayOfButtonsStored);
 
-    console.log("ARRAY: ");
-    console.log(functionArrayOfTopicButtons);
-    var status = Cookies.set("topicArrayButtons", functionArrayOfTopicButtons);
-    status = JSON.stringify(status);
-    var cookiesAvail = Cookies.get();
-    console.log(status);
-    console.log(cookiesAvail);
-    topic = "gopher";
-    // stringArray.push(topic);
+    if (arrayOfButtonsStored != null) {
 
-    //Read cookie:
-    //  Cookies.get('name'); // => 'value'
-    //  Cookies.get('nothing'); // => undefined
-    var arrayLocal = Cookies.getJSON('topicArrayButtons');
-    console.log("arrayDump");
-    console.log(arrayLocal);
+        for (i = 0; i < arrayOfButtonsStored.length; i++) {
 
-    console.log(Cookies.get());
+            console.log("Gen BUttons: " + arrayOfButtonsStored[i].searchOption);
 
-    // Read all visible cookies:
-    //  Cookies.get(); // => { name: 'value' }
+            switch (arrayOfButtonsStored[i].searchOption) {
+                case "giphy":
+                    //add giphy button at the top
+                    var newButton = $("<button class='btn topic-btn bg-success text-white' search-option=" + arrayOfButtonsStored[i].searchOption + " value='" + arrayOfButtonsStored[i].topic + "'>" + arrayOfButtonsStored[i].topic + "</button>");
+                    $('#topic-buttons').append(newButton);
 
-    // Delete cookie:
-    //Cookies.remove('name');
-    console.log(Cookies.remove("topicArrayButtons"));
+                    break;
+
+                case "omdb":
+                    //add OMDb button at the top
+                    var newButton = $("<button class='btn topic-btn bg-warning' search-option=" + arrayOfButtonsStored[i].searchOption + " value='" + arrayOfButtonsStored[i].topic + "'>" + arrayOfButtonsStored[i].topic + "</button>");
+                    $('#topic-buttons').append(newButton);
+
+                    break;
+
+                case "us-loc":
+                    //add LOC button at the top
+                    var newButton = $("<button class='btn topic-btn bg-primary text-white' search-option=" + arrayOfButtonStored[i].searchOption + " value='" + arrayOfButtonStored[i].topic + "'>" + arrayOfButtonStored[i].topic + "</button>");
+                    $('#topic-buttons').append(newButton);
+
+                    break;
+            };
+
+        };
+    }
 
 }
 
