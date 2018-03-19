@@ -67,7 +67,9 @@ var arrayOfTopicButtons = [
     { topic: "star wars", searchOption: "omdb" },
     { topic: "lawnmowers", searchOption: "us-loc" }
 ];
-// var arrayOfTopicButtons;
+// var to get the title returned from the OMDb response
+var movieTitleReturned = "";
+
 
 $(document).ready(function () {
 
@@ -113,12 +115,18 @@ $(document).ready(function () {
                 break;
 
             case "omdb":
+
+                // var to hold the name returned from the DB for the button
+                queryOMDbApi(topic);
+
+                console.log("inside Case:" +movieTitleReturned);
+
                 //add OMDb button at the top
+                //set button name to match the one returned from the OMDb query
                 var newButton = $("<button class='topic-btn bg-warning' search-option=" + $(".custom-select").val() + " value='" + topic + "'>" + topic + "</button>");
                 $('#topic-buttons').append(newButton);
                 var tempObj = { topic: topic, searchOption: "omdb" };
                 arrayOfTopicButtons.push(tempObj);
-                queryOMDbApi(topic);
                 break;
 
             case "us-loc":
@@ -465,6 +473,7 @@ function queryGiphyApi(searchString) {
         }
 
     });
+
 }
 
 
@@ -504,6 +513,8 @@ function queryOMDbApi(topic) {
         //
 
         var moviePoster = getMovieInfo.Poster
+        movieTitleReturned = getMovieInfo.Title;
+        console.log(getMovieInfo.Title);
         console.log(getMovieInfo.Poster);
         var newDiv = $('<div class="card border bg-light">')
         newDiv.append("<p>" + getMovieInfo.Title + "</p>")
@@ -527,14 +538,15 @@ function queryOMDbApi(topic) {
 
         //fill up the imgDiv
         imgDiv.append(downloadAnchor);
-        
+
         //place imgDiv inside of parent movieImgDiv
         newDiv.prepend(imgDiv);
-        
+
         $("#gif-content").prepend(newDiv);
         console.log(newDiv);
 
     });
+
 }
 
 //pre-populate the button row at the top of the screen
