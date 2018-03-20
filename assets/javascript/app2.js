@@ -577,7 +577,7 @@ function populateButtons(arrayOfButtons) {
 
                 case "us-loc":
                     //add LOC button at the top
-                    var newButton = $("<button class='btn topic-btn bg-primary text-white' search-option=" + arrayOfButtonStored[i].searchOption + " value='" + arrayOfButtonStored[i].topic + "'>" + arrayOfButtonStored[i].topic + "</button>");
+                    var newButton = $("<button class='btn topic-btn bg-primary text-white' search-option=" + arrayOfButtonsStored[i].searchOption + " value='" + arrayOfButtonsStored[i].topic + "'>" + arrayOfButtonsStored[i].topic + "</button>");
                     $('#topic-buttons').append(newButton);
 
                     break;
